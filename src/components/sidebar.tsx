@@ -57,7 +57,7 @@ const Sidebar: React.FC = () => {
       />
       <div className="text-center md:text-left">
         <p className="text-sm font-normal text-black font-worksans">Andy Samberg</p>
-        <p className="text-xs text-gray-500 font-worksans break-all">andy.samberg@gmail.com</p>
+        <p className="text-xs text-gray-500 font-worksans ">andy.samberg@gmail.com</p>
       </div>
     </div>
     <ChevronRight className="text-brand-blue shrink-0" size={20} />
