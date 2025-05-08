@@ -29,37 +29,46 @@ type Product = {
   priceInr: number;
   discount: Discount;
 };
+const initialProduct: Product = {
+    name: '',
+    category: '',
+    brand: '',
+    image: '',
+    variants: [],
+    combinations: {},
+    priceInr: 0,
+    discount: {
+      method: 'pct',
+      value: 0,
+    },
+  };
+  
+type ProductState = {
+    ProductState : Product[];
+}
 
-const initialState: Product = {
-  name: '',
-  category: '',
-  brand: '',
-  image: '',
-  variants: [],
-  combinations: {},
-  priceInr: 0,
-  discount: { method: 'pct', value: 0 },
-};
+const initialState: ProductState = {
+    ProductState : []
+}
 
 const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    updateProduct: (state, action: PayloadAction<Partial<Product>>) => {
-      return { ...state, ...action.payload };
+    updateProduct: (state, action: PayloadAction<{ productIndex: number, updatedProduct: Partial<Product> }>) => {
+      const { productIndex, updatedProduct } = action.payload;
+      state.ProductState[productIndex] = { ...state.ProductState[productIndex], ...updatedProduct };
     },
-    addVariant: (state, action: PayloadAction<Variant>) => {
-      state.variants.push(action.payload);
-    },
-    removeVariant: (state, action: PayloadAction<number>) => {
-      state.variants.splice(action.payload, 1);
-    },
-    updateVariant: (state, action: PayloadAction<{ index: number; variant: Variant }>) => {
-      state.variants[action.payload.index] = action.payload.variant;
-    },
-    resetProduct: () => initialState,
+    
+    resetProduct: (state, action: PayloadAction<{ productIndex: number }>) => {
+        const { productIndex } = action.payload;
+        state.ProductState[productIndex] = { ...initialProduct };
+      },
+      addProduct: (state, action: PayloadAction<Product>) => {
+        state.ProductState.push(action.payload);
+      },
   },
 });
 
-export const { updateProduct, addVariant, removeVariant, updateVariant, resetProduct } = productSlice.actions;
+export const { updateProduct, resetProduct,addProduct } = productSlice.actions;
 export default productSlice.reducer;

@@ -47,20 +47,23 @@ const Sidebar: React.FC = () => {
           );
         })}
       </ul>
-      <div className="mt-auto flex items-center  px-3 py-4 border-t" style={{ borderColor: '#00000014' }}>
-        <div className="flex items-center gap-3">
-          <img
-            src="/images/image.png"
-            alt="User"
-            className="w-12 h-12 rounded-full object-cover"
-          />
-          <div>
-            <p className="text-sm font-normal text-black font-worksans">Andy Samberg</p>
-            <p className="text-sm text-gray-500 font-worksans">andy.samberg@gmail.com</p>
-          </div>
-        </div>
-        <ChevronRight className="text-brand-blue" size={24} />
+      <div className="mt-auto px-3 py-4 border-t border-gray-200">
+  <div className="flex flex-col md:flex-row items-center justify-between gap-3 w-full">
+    <div className="flex items-center gap-2">
+      <img
+        src="/images/image.png"
+        alt="User"
+        className="w-12 h-12 rounded-full object-cover"
+      />
+      <div className="text-center md:text-left">
+        <p className="text-sm font-normal text-black font-worksans">Andy Samberg</p>
+        <p className="text-xs text-gray-500 font-worksans break-all">andy.samberg@gmail.com</p>
       </div>
+    </div>
+    <ChevronRight className="text-brand-blue shrink-0" size={20} />
+  </div>
+</div>
+
     </div>
   );
 };

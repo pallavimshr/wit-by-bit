@@ -1,86 +1,87 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateProduct } from '../store/slices/productSlice';
 import { RootState } from '../store';
+import { setProductForm } from '../store/slices/formSlice';
+import ImageUploading from 'react-images-uploading';
+import { ChevronDown, Image as ImageIcon } from 'lucide-react';
 
 const DescriptionForm: React.FC = () => {
   const dispatch = useDispatch();
-  const { name, category, brand, image } = useSelector((state: RootState) => state.product);
-  const categories = useSelector((state: RootState) => state.category.categories); 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const categories = useSelector((state: RootState) => state.category.categories);
+  const product = useSelector((state: RootState) => state.form.product);
+  const { name, category, brand, image } = product;
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        dispatch(updateProduct({ image: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+  const [images, setImages] = useState([{ data_url: image }]); 
+
+  const onChange = (imageList: any) => {
+    setImages(imageList);
+    if (imageList.length > 0) {
+      dispatch(setProductForm({ image: imageList[0].data_url }));
     }
   };
 
   return (
     <div className="space-y-4">
-      
       <div>
-        <label className="font-medium">Product Name *</label>
+        <label className="font-medium font-worksans">Product Name *</label>
         <input
           className="w-full border p-2 rounded mt-1"
           value={name}
-          onChange={(e) => dispatch(updateProduct({ name: e.target.value }))}
+          onChange={(e) => dispatch(setProductForm({ name: e.target.value }))}
         />
       </div>
 
-     
-      <div>
-        <label className="font-medium">Category *</label>
-        <select
-          className="w-full border p-2 rounded mt-1"
-          value={category}
-          onChange={(e) => dispatch(updateProduct({ category: e.target.value }))}
-        >
-          <option value="">Select</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.name}>{cat.name}</option>
-          ))}
-        </select>
-      </div>
+      <div className="relative">
+  <label className="font-medium font-worksans">Category *</label>
+  <select
+    className="w-full border p-2 bg-white rounded mt-1 cursor-pointer appearance-none pr-10"
+    value={category}
+    onChange={(e) => dispatch(setProductForm({ category: e.target.value }))}
+  >
+    <option value=""></option>
+    {categories.map((cat) => (
+      <option key={cat.id} value={cat.name}>
+        {cat.name}
+      </option>
+    ))}
+  </select>
 
-      
+  
+  <div className="pointer-events-none absolute right-4 top-[40px] text-brand-blue">
+    <ChevronDown size={18} />
+  </div>
+</div>
+
       <div>
-        <label className="font-medium">Brand *</label>
+        <label className="font-medium font-worksans">Brand *</label>
         <input
           className="w-full border p-2 rounded mt-1"
           value={brand}
-          onChange={(e) => dispatch(updateProduct({ brand: e.target.value }))}
+          onChange={(e) => dispatch(setProductForm({ brand: e.target.value }))}
         />
       </div>
 
-      
       <div>
-        <label className="font-medium">Product Image</label>
-        <div className="mt-1">
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-brand-blue text-white px-4 py-2 rounded-md font-medium"
-          >
-            Upload Image
-          </button>
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-            className="hidden"
-          />
-        </div>
-        {image && (
-          <div className="mt-3">
-            <img src={image} alt="Uploaded preview" className="w-32 h-32 object-cover rounded" />
-          </div>
-        )}
+        
+        <ImageUploading
+          value={images}
+          onChange={onChange}
+          dataURLKey="data_url"
+          acceptType={['jpg', 'png', 'jpeg']}
+        >
+          {({ onImageUpload }) => (
+            <div>
+              <button
+  onClick={onImageUpload}
+  className="text-brand-blue bg-white px-4 py-2 rounded-md border border-brand-blue font-medium flex items-center gap-2"
+>
+  <ImageIcon size={16} />
+  Upload Image
+</button>
+              
+            </div>
+          )}
+        </ImageUploading>
       </div>
     </div>
   );

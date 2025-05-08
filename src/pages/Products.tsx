@@ -9,6 +9,7 @@ const Products: React.FC = () => {
 const [categoryName, setCategoryName] = useState<string>('');
 const dispatch = useDispatch();
   const categories = useSelector((state: RootState) => state.category.categories);
+  const products =useSelector((state:RootState) =>state.product.ProductState);
   const navigate = useNavigate();
 
   const handleAddCategory = () => {
@@ -20,7 +21,7 @@ const dispatch = useDispatch();
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 ">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-black font-worksans">Products</h1>
         <div className="flex gap-4">
@@ -38,13 +39,53 @@ const dispatch = useDispatch();
         </div>
       </div>
      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-        {categories.map((cat) => (
-          <div key={cat.id} className="border rounded-[10px] p-4 h-[750px] bg-custom-gray ">
-            <h2 className="text-base font-medium text-black font-worksans">{cat.name}</h2>
-          </div>
-        ))}
+      <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  {categories.map((cat) => {
+    const productsInCategory = products.filter(product => product.category === cat.name);
+    
+
+    return (
+      <div key={cat.id} className="border rounded-[10px] p-4 bg-custom-gray h-[750px]">
+        <h2 className="text-base font-medium text-black mb-4 font-worksans">{cat.name}</h2>
+        
+
+        {productsInCategory.length > 0 ? (
+  <div className="space-y-3">
+    {productsInCategory.map((product, index) => (
+     <div
+     key={index}
+     className="bg-white p-3 rounded shadow font-worksans flex items-center gap-4"
+   >
+     {product.image ? (
+       <img
+         src={product.image}
+         alt={product.name}
+         className="w-20 h-20 object-cover rounded"
+       />
+     ) : (
+       <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center text-gray-500 text-sm">
+        
+       </div>
+     )}
+   
+     <div className="flex flex-col">
+       <h3 className="text-base font-medium text-black font-worksans">{product.name}</h3>
+       <p className="text-sm text-black font-normal mt-1 font-worksans">₹{product.priceInr}</p>
+       <p className="text-sm text-brand-blue bg-sky-light p-0.5 text-center rounded-md mt-1 font-worksans">{product.brand}</p>
+     </div>
+   </div>
+   
+    ))}
+  </div>
+) : (
+  <p className="text-gray-500 text-sm font-worksans">No products yet</p>
+)}
+
       </div>
+    );
+  })}
+</div>
+
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
