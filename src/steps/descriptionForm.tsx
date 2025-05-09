@@ -17,6 +17,7 @@ const DescriptionForm: React.FC = () => {
     setImages(imageList);
     if (imageList.length > 0) {
       dispatch(setProductForm({ image: imageList[0].data_url }));
+      alert('Image uploaded successfully!');
     }
   };
 
