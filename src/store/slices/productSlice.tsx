@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type Variant = {
   name: string;
@@ -15,7 +15,7 @@ type Combination = {
 };
 
 type Discount = {
-  method: 'pct' | 'flat';
+  method: "pct" | "flat";
   value: number;
 };
 
@@ -30,45 +30,54 @@ type Product = {
   discount: Discount;
 };
 const initialProduct: Product = {
-    name: '',
-    category: '',
-    brand: '',
-    image: '',
-    variants: [],
-    combinations: {},
-    priceInr: 0,
-    discount: {
-      method: 'pct',
-      value: 0,
-    },
-  };
-  
+  name: "",
+  category: "",
+  brand: "",
+  image: "",
+  variants: [],
+  combinations: {},
+  priceInr: 0,
+  discount: {
+    method: "pct",
+    value: 0,
+  },
+};
+
 type ProductState = {
-    ProductState : Product[];
-}
+  ProductState: Product[];
+};
 
 const initialState: ProductState = {
-    ProductState : []
-}
+  ProductState: [],
+};
 
 const productSlice = createSlice({
-  name: 'product',
+  name: "product",
   initialState,
   reducers: {
-    updateProduct: (state, action: PayloadAction<{ productIndex: number, updatedProduct: Partial<Product> }>) => {
+    updateProduct: (
+      state,
+      action: PayloadAction<{
+        productIndex: number;
+        updatedProduct: Partial<Product>;
+      }>,
+    ) => {
       const { productIndex, updatedProduct } = action.payload;
-      state.ProductState[productIndex] = { ...state.ProductState[productIndex], ...updatedProduct };
+      state.ProductState[productIndex] = {
+        ...state.ProductState[productIndex],
+        ...updatedProduct,
+      };
     },
-    
+
     resetProduct: (state, action: PayloadAction<{ productIndex: number }>) => {
-        const { productIndex } = action.payload;
-        state.ProductState[productIndex] = { ...initialProduct };
-      },
-      addProduct: (state, action: PayloadAction<Product>) => {
-        state.ProductState.push(action.payload);
-      },
+      const { productIndex } = action.payload;
+      state.ProductState[productIndex] = { ...initialProduct };
+    },
+    addProduct: (state, action: PayloadAction<Product>) => {
+      state.ProductState.push(action.payload);
+    },
   },
 });
 
-export const { updateProduct, resetProduct,addProduct } = productSlice.actions;
+export const { updateProduct, resetProduct, addProduct } = productSlice.actions;
 export default productSlice.reducer;

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type Variant = { name: string; values: string[] };
 type Combination = {
@@ -9,7 +9,7 @@ type Combination = {
     inStock: boolean;
   };
 };
-type Discount = { method: 'pct' | 'flat'; value: number };
+type Discount = { method: "pct" | "flat"; value: number };
 
 type ProductFormData = {
   name: string;
@@ -24,22 +24,25 @@ type ProductFormData = {
 
 const initialState: { product: ProductFormData } = {
   product: {
-    name: '',
-    category: '',
-    brand: '',
-    image: '',
+    name: "",
+    category: "",
+    brand: "",
+    image: "",
     variants: [],
     combinations: {},
     priceInr: 0,
-    discount: { method: 'pct', value: 0 },
+    discount: { method: "pct", value: 0 },
   },
 };
 
 const formSlice = createSlice({
-  name: 'form',
+  name: "form",
   initialState,
   reducers: {
-    setProductForm: (state, action: PayloadAction<Partial<ProductFormData>>) => {
+    setProductForm: (
+      state,
+      action: PayloadAction<Partial<ProductFormData>>,
+    ) => {
       state.product = { ...state.product, ...action.payload };
     },
     resetForm: (state) => {
@@ -52,7 +55,10 @@ const formSlice = createSlice({
     removeVariant: (state, action: PayloadAction<{ variantIndex: number }>) => {
       state.product.variants.splice(action.payload.variantIndex, 1);
     },
-    updateVariant: (state, action: PayloadAction<{ variantIndex: number; variant: Variant }>) => {
+    updateVariant: (
+      state,
+      action: PayloadAction<{ variantIndex: number; variant: Variant }>,
+    ) => {
       const { variantIndex, variant } = action.payload;
       state.product.variants[variantIndex] = variant;
     },

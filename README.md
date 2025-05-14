@@ -3,6 +3,7 @@
 A modern, responsive product management interface built with **React** and **Tailwind CSS**. Easily manage product categories, images, pricing, discounts, variants, and stock.
 
 ### 🚀 Live Demo
+
 👉 [View Live Demo](https://animated-quokka-7f9fcc.netlify.app/)
 
 ---
@@ -42,3 +43,4 @@ npm install
 
 # 3. Run the development server
 npm run dev
+```

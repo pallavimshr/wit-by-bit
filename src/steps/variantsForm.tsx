@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { Trash2, X } from 'lucide-react';
-import { addVariant, removeVariant, updateVariant } from '../store/slices/formSlice'; 
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { Trash2, X } from "lucide-react";
+import {
+  addVariant,
+  removeVariant,
+  updateVariant,
+} from "../store/slices/formSlice";
 
 type Props = {
   showErrors?: boolean;
@@ -10,26 +14,33 @@ type Props = {
 
 const VariantsForm: React.FC<Props> = ({ showErrors = false }) => {
   const dispatch = useDispatch();
-  const variants = useSelector((state: RootState) => state.form.product?.variants || []);
+  const variants = useSelector(
+    (state: RootState) => state.form.product?.variants || [],
+  );
   const predefinedOptionsMap: { [key: string]: string[] } = {
-    Size: ['S', 'M', 'L'],
-    Color: ['Black', 'Red', 'Blue'],
+    Size: ["S", "M", "L"],
+    Color: ["Black", "Red", "Blue"],
   };
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState<{ [key: number]: string }>({});
 
   const handleNameChange = (index: number, value: string) => {
-    dispatch(updateVariant({ variantIndex: index, variant: { ...variants[index], name: value } }));
+    dispatch(
+      updateVariant({
+        variantIndex: index,
+        variant: { ...variants[index], name: value },
+      }),
+    );
   };
   useEffect(() => {
     if (variants.length === 0) {
-      dispatch(addVariant({ variant: { name: '', values: [] } }));
+      dispatch(addVariant({ variant: { name: "", values: [] } }));
     }
   }, [variants.length, dispatch]);
 
   const predefinedOptions = Object.keys(predefinedOptionsMap);
   const availableOptions = predefinedOptions.filter(
-    (opt) => !variants.some((v) => v.name.toLowerCase() === opt.toLowerCase())
+    (opt) => !variants.some((v) => v.name.toLowerCase() === opt.toLowerCase()),
   );
 
   const handleValueAdd = (index: number) => {
@@ -41,10 +52,9 @@ const VariantsForm: React.FC<Props> = ({ showErrors = false }) => {
         values: [...variants[index].values, val],
       };
       dispatch(updateVariant({ variantIndex: index, variant: updated }));
-      setInputValue((prev) => ({ ...prev, [index]: '' }));
+      setInputValue((prev) => ({ ...prev, [index]: "" }));
     }
   };
-  
 
   const handleRemoveValue = (variantIndex: number, valueIndex: number) => {
     const updated = {
@@ -54,15 +64,18 @@ const VariantsForm: React.FC<Props> = ({ showErrors = false }) => {
     dispatch(updateVariant({ variantIndex: variantIndex, variant: updated }));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === 'Enter' || e.key === ',') {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       handleValueAdd(index);
     }
   };
 
   const handleAddOption = () => {
-    dispatch(addVariant({ variant: { name: '', values: [] } }));
+    dispatch(addVariant({ variant: { name: "", values: [] } }));
   };
 
   return (
@@ -76,36 +89,37 @@ const VariantsForm: React.FC<Props> = ({ showErrors = false }) => {
               onFocus={() => setActiveDropdown(idx)}
               onBlur={() => setTimeout(() => setActiveDropdown(null), 100)}
               onChange={(e) => handleNameChange(idx, e.target.value)}
-              className={`border p-2 rounded w-full ${showErrors && !variant.name ? 'border-red-500' : ''}`}
+              className={`border p-2 rounded w-full ${showErrors && !variant.name ? "border-red-500" : ""}`}
             />
             {activeDropdown === idx && (
-  <ul className="absolute z-10 mt-1 w-full bg-white border rounded shadow text-sm">
-    {availableOptions
-      .filter((opt) => opt.toLowerCase().includes(variant.name.toLowerCase()))
-      .map((option, optionIdx) => (
-        <li
-          key={optionIdx}
-          onMouseDown={() => {
-            
-            dispatch(
-              updateVariant({
-                variantIndex: idx,
-                variant: {
-                  ...variants[idx],
-                  name: option,
-                  values: [...(predefinedOptionsMap[option] || [])],
-                },
-              })
-            );
-            setInputValue((prev) => ({ ...prev, [idx]: '' }));
-          }}
-          className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-        >
-          {option}
-        </li>
-      ))}
-  </ul>
-)}
+              <ul className="absolute z-10 mt-1 w-full bg-white border rounded shadow text-sm">
+                {availableOptions
+                  .filter((opt) =>
+                    opt.toLowerCase().includes(variant.name.toLowerCase()),
+                  )
+                  .map((option, optionIdx) => (
+                    <li
+                      key={optionIdx}
+                      onMouseDown={() => {
+                        dispatch(
+                          updateVariant({
+                            variantIndex: idx,
+                            variant: {
+                              ...variants[idx],
+                              name: option,
+                              values: [...(predefinedOptionsMap[option] || [])],
+                            },
+                          }),
+                        );
+                        setInputValue((prev) => ({ ...prev, [idx]: "" }));
+                      }}
+                      className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      {option}
+                    </li>
+                  ))}
+              </ul>
+            )}
 
             {showErrors && !variant.name && (
               <p className="text-xs text-red-500 mt-1">Option can’t be empty</p>
@@ -115,7 +129,7 @@ const VariantsForm: React.FC<Props> = ({ showErrors = false }) => {
           <div className="relative w-1/2">
             <div
               className={`flex flex-wrap items-center border p-1 rounded min-h-[42px] cursor-text ${
-                showErrors && !variant.values.length ? 'border-red-500' : ''
+                showErrors && !variant.values.length ? "border-red-500" : ""
               }`}
               onClick={() =>
                 document.getElementById(`value-input-${idx}`)?.focus()
@@ -139,7 +153,7 @@ const VariantsForm: React.FC<Props> = ({ showErrors = false }) => {
               <input
                 id={`value-input-${idx}`}
                 type="text"
-                value={inputValue[idx] || ''}
+                value={inputValue[idx] || ""}
                 onChange={(e) =>
                   setInputValue((prev) => ({ ...prev, [idx]: e.target.value }))
                 }
@@ -147,11 +161,12 @@ const VariantsForm: React.FC<Props> = ({ showErrors = false }) => {
                 className="flex-1 min-w-[80px] border-none outline-none bg-transparent"
               />
             </div>
-            
           </div>
 
           <div className="pt-2">
-            <button onClick={() => dispatch(removeVariant({ variantIndex: idx }))}>
+            <button
+              onClick={() => dispatch(removeVariant({ variantIndex: idx }))}
+            >
               <Trash2 className="text-red-500" />
             </button>
           </div>

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { setProductForm } from '../store/slices/formSlice';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { setProductForm } from "../store/slices/formSlice";
 
 type Combination = {
   name: string;
@@ -12,42 +12,48 @@ type Combination = {
 
 type CombinationFormProps = {
   showErrors: boolean;
-  
 };
 
 const CombinationForm: React.FC<CombinationFormProps> = ({ showErrors }) => {
   const dispatch = useDispatch();
   const product = useSelector((state: RootState) => state.form.product);
   const { variants, combinations } = product;
-  const skus = Object.values(combinations).map((c) => c.sku.trim().toLowerCase());
+  const skus = Object.values(combinations).map((c) =>
+    c.sku.trim().toLowerCase(),
+  );
 
   useEffect(() => {
     if (Object.keys(combinations).length === 0) {
       const variantCombos = getAllCombinations(variants);
-      const initialCombinations = variantCombos.reduce((acc: { [key: string]: Combination }, combo) => {
-        acc[combo] = { name: combo, sku: '', quantity: null, inStock: false };
-        return acc;
-      }, {});
+      const initialCombinations = variantCombos.reduce(
+        (acc: { [key: string]: Combination }, combo) => {
+          acc[combo] = { name: combo, sku: "", quantity: null, inStock: false };
+          return acc;
+        },
+        {},
+      );
       dispatch(setProductForm({ combinations: initialCombinations }));
     }
   }, [variants, combinations, dispatch]);
-  
 
   const getSkuError = (sku: string, index: number) => {
     const trimmed = sku.trim().toLowerCase();
-    if (!trimmed) return 'SKU is required';
-    if (skus.indexOf(trimmed) !== index) return 'Duplicate SKU';
+    if (!trimmed) return "SKU is required";
+    if (skus.indexOf(trimmed) !== index) return "Duplicate SKU";
     return null;
   };
 
-  const handleChange = (comboName: string, field: keyof Combination, value: any) => {
+  const handleChange = (
+    comboName: string,
+    field: keyof Combination,
+    value: any,
+  ) => {
     const updatedCombinations = { ...combinations };
     updatedCombinations[comboName] = {
       ...updatedCombinations[comboName],
       [field]: value,
     };
     dispatch(setProductForm({ combinations: updatedCombinations }));
-
   };
 
   return (
@@ -72,10 +78,14 @@ const CombinationForm: React.FC<CombinationFormProps> = ({ showErrors }) => {
                     <input
                       type="text"
                       className={`w-full border rounded px-3 py-1 ${
-                        showErrors && error ? 'border-red-500' : 'border-gray-300'
+                        showErrors && error
+                          ? "border-red-500"
+                          : "border-gray-300"
                       }`}
                       value={row.sku}
-                      onChange={(e) => handleChange(row.name, 'sku', e.target.value)}
+                      onChange={(e) =>
+                        handleChange(row.name, "sku", e.target.value)
+                      }
                     />
                     {showErrors && error && (
                       <span className="text-red-500 text-sm mt-1">{error}</span>
@@ -88,11 +98,13 @@ const CombinationForm: React.FC<CombinationFormProps> = ({ showErrors }) => {
                       type="checkbox"
                       className="sr-only peer"
                       checked={row.inStock}
-                      onChange={(e) => handleChange(row.name, 'inStock', e.target.checked)}
+                      onChange={(e) =>
+                        handleChange(row.name, "inStock", e.target.checked)
+                      }
                     />
                     <div
                       className={`relative w-11 h-6 ${
-                        row.inStock ? 'bg-black' : 'bg-slate-200'
+                        row.inStock ? "bg-black" : "bg-slate-200"
                       } peer-focus:outline-none rounded-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
                     ></div>
                   </label>
@@ -102,11 +114,15 @@ const CombinationForm: React.FC<CombinationFormProps> = ({ showErrors }) => {
                     type="number"
                     min="0"
                     className={`w-full border rounded px-3 py-1 ${
-                      !row.inStock ? 'bg-gray-100 cursor-not-allowed' : ''
+                      !row.inStock ? "bg-gray-100 cursor-not-allowed" : ""
                     }`}
-                    value={row.quantity ?? ''}
+                    value={row.quantity ?? ""}
                     onChange={(e) =>
-                      handleChange(row.name, 'quantity', parseInt(e.target.value, 10))
+                      handleChange(
+                        row.name,
+                        "quantity",
+                        parseInt(e.target.value, 10),
+                      )
                     }
                     disabled={!row.inStock}
                   />
@@ -120,7 +136,9 @@ const CombinationForm: React.FC<CombinationFormProps> = ({ showErrors }) => {
   );
 };
 
-function getAllCombinations(variants: { name: string; values: string[] }[]): string[] {
+function getAllCombinations(
+  variants: { name: string; values: string[] }[],
+): string[] {
   if (!variants.length) return [];
 
   const combine = (prefix: string[], index: number): string[][] => {
@@ -132,7 +150,7 @@ function getAllCombinations(variants: { name: string; values: string[] }[]): str
     return result;
   };
 
-  return combine([], 0).map((combo) => combo.join('/'));
+  return combine([], 0).map((combo) => combo.join("/"));
 }
 
 export default CombinationForm;
